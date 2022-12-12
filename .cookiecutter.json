@@ -1,0 +1,14 @@
+{
+  "_output_dir": "/Users/sergey/work/djangoheads/django_weblate",
+  "_template": "gh:cjolowicz/cookiecutter-hypermodern-python",
+  "author": "Sergey Bershadsky",
+  "copyright_year": "2022",
+  "development_status": "Development Status :: 2 - Pre-Alpha",
+  "email": "sergio@djangoheads.com",
+  "friendly_name": "Django Weblate",
+  "github_user": "djangoheads",
+  "license": "Apache-2.0",
+  "package_name": "django_weblate",
+  "project_name": "django-weblate",
+  "version": "0.0.1"
+}
