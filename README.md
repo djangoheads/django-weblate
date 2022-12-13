@@ -37,6 +37,10 @@ You can install _Django Weblate_ via [pip] from [PyPI]:
 $ pip install django-weblate
 ```
 
+## Test
+
+    docker run --rm -it -v $(pwd):/src djangoheads/nox nox -f src/noxfile.py
+
 ## Usage
 
 Please see the [Command-line Reference] for details.

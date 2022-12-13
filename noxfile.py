@@ -23,7 +23,7 @@ except ImportError:
 
 
 package = "django_weblate"
-python_versions = ["3.11", "3.10", "3.9", "3.8", "3.7"]
+python_versions = ["3.11", "3.10", "3.9", "3.8"]
 django_versions = ["3.2", "4.0", "4.1"]
 nox.needs_version = ">= 2021.6.6"
 nox.options.sessions = (
@@ -159,10 +159,24 @@ def mypy(session: Session) -> None:
 
 
 @session(python=python_versions)
-@nox.parametrize('django', django_versions)
+@nox.parametrize("django", django_versions)
 def tests(session: Session, django: str) -> None:
     """Run the test suite."""
-    session.install(f'django=={django}')
+    session.install(f"django=={django}")
+    session.install(".")
+    session.install("coverage[toml]", "pytest", "pygments")
+    try:
+        session.run("coverage", "run", "--parallel", "-m", "pytest", *session.posargs)
+    finally:
+        if session.interactive:
+            session.notify("coverage", posargs=[])
+
+
+@session(python=["3.7"])
+@nox.parametrize("django", ["3.2"])
+def tests_django_32_on_py37(session: Session, django: str) -> None:
+    """Run the test suite."""
+    session.install(f"django=={django}")
     session.install(".")
     session.install("coverage[toml]", "pytest", "pygments")
     try:
