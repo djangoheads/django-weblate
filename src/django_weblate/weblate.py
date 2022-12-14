@@ -5,8 +5,6 @@ from django_weblate import settings
 from django.db.models import Model
 from django_weblate.collectors import DjangoModelCollector
 
-from . import models
-
 
 def get_translation(model: Model, language: str = "en", provider: str = "default"):
     """
@@ -52,15 +50,13 @@ def update_source_translation(key: str, source: str, provider: str = "default"):
     component: wlc.Component = weblate.get_component(f"{project}/{component}")
 
     try:
-        unit = weblate.add_source_string(
+        weblate.add_source_string(
             project=project,
             component=component["name"],
             msgid=key,
             msgstr=source,
             source_language=language,
         )
-        unit_url = unit.pop("url")
-        unit = wlc.Unit(weblate, unit_url, **unit)
     except wlc.WeblateException:
         q = f"key:{key} AND language:{language}"
         units = weblate.list_units("/units/", params={"q": q})
@@ -68,16 +64,6 @@ def update_source_translation(key: str, source: str, provider: str = "default"):
         if unit["url"] != unit["source_unit"]:
             raise Exception("Inconsistent Unit State")
         unit.update(source=[source])
-
-    instance, created = models.UnitCache.objects.get_or_create(
-        provider="default",
-        weblate_id=unit.id,
-        key=key,
-    )
-    instance.target = source
-    instance.state = unit.state
-    instance.source_unit_id = int(unit.source_unit.rstrip("/").split("/")[-1])
-    instance.translation = unit.translation
 
 
 def update_source_translation_by_instance(instance: Model):
